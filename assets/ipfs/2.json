@@ -1,0 +1,33 @@
+{
+    "name": "-3512055466605374064",
+    "attributes": [
+        {
+            "trait_type": "backing",
+            "value": "2"
+        },
+        {
+            "trait_type": "base",
+            "value": "Round color"
+        },
+        {
+            "trait_type": "power",
+            "value": "Space"
+        },
+        {
+            "trait_type": "eyes",
+            "value": "angry"
+        },
+        {
+            "trait_type": "mouth",
+            "value": "NORMAL"
+        },
+        {
+            "trait_type": "nose",
+            "value": "side"
+        },
+        {
+            "trait_type": "zodiac",
+            "value": "Pisces"
+        }
+    ]
+}
