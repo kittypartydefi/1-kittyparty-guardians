@@ -1,0 +1,33 @@
+{
+    "name": "4931811623306973062",
+    "attributes": [
+        {
+            "trait_type": "backing",
+            "value": "12"
+        },
+        {
+            "trait_type": "base",
+            "value": "Pointy blacky"
+        },
+        {
+            "trait_type": "power",
+            "value": "Earth"
+        },
+        {
+            "trait_type": "eyes",
+            "value": "round right"
+        },
+        {
+            "trait_type": "mouth",
+            "value": "teeth 1"
+        },
+        {
+            "trait_type": "nose",
+            "value": "small round"
+        },
+        {
+            "trait_type": "zodiac",
+            "value": "Aquarius"
+        }
+    ]
+}
