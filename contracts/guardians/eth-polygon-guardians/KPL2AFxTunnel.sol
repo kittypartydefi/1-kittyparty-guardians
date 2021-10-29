@@ -20,7 +20,7 @@ contract KPL2AFxTunnel is AccessControl, FxBaseChildTunnel {
     IKPL2Guardian public guardian;
 
     event SetKPChild(address _kpChild);
-    event AwakenTheMinions(uint tokenId, uint attributeSet);
+    event AwakenTheMinions(uint tokenId, uint16 attributeSet);
 
     constructor(address _fxChild) FxBaseChildTunnel(_fxChild) {
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
@@ -37,7 +37,7 @@ contract KPL2AFxTunnel is AccessControl, FxBaseChildTunnel {
     {
         latestStateId = stateId;
         latestRootMessageSender = sender;
-        (uint tokenId, uint attributeSet) = abi.decode(data,(uint,uint));
+        (uint tokenId, uint16 attributeSet) = abi.decode(data,(uint,uint16));
 
         emit AwakenTheMinions(tokenId, attributeSet);
         guardian.awakenTribe(tokenId, attributeSet);

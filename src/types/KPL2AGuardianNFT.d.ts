@@ -24,7 +24,7 @@ interface KPL2AGuardianNFTInterface extends ethers.utils.Interface {
   functions: {
     "DEFAULT_ADMIN_ROLE()": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
-    "awakenTribe(uint256,uint8)": FunctionFragment;
+    "awakenTribe(uint256,uint16)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "baseURI()": FunctionFragment;
     "burn(uint256)": FunctionFragment;

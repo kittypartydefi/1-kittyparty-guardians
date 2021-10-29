@@ -34,9 +34,15 @@ module.exports = {
   solidity: {
     compilers: [
       {
-        version: "0.8.0"
+        version: "0.8.7"
       }
-    ]
+    ],
+    settings: {
+      optimizer: {
+        enabled: true,
+        runs: 1000,
+      },
+    },
   },
   /*contractSizer: {
     alphaSort: true,
@@ -45,7 +51,7 @@ module.exports = {
     strict: true,
   },*/
   etherscan: {
-    apiKey: process.env.POLYGONSCAN_APIKEY
+    apiKey: process.env.ETHERSCAN_APIKEY
   },
   typechain: {
     outDir: 'src/types',
@@ -63,20 +69,24 @@ module.exports = {
 
 if(process.env.MNEMONIC) {
   module.exports.networks = {
+    mainnet: {
+      url: process.env.MAINNET_RPC || "https://mainnet.infura.io/v3/XXXX",
+      accounts,
+    },
     goerli: {
-      url: process.env.GOERLI_RPC || "https://goerli.infura.io/v3/9f3370d63f484b24a73fc28c6b487ee4",
+      url: process.env.GOERLI_RPC || "https://goerli.infura.io/v3/XXX",
       accounts,
     },
     rinkeby: {
-      url: process.env.RINKEBY_RPC || "https://rinkeby.infura.io/v3/9f3370d63f484b24a73fc28c6b487ee4",
+      url: process.env.RINKEBY_RPC || "https://rinkeby.infura.io/v3/XXX",
       accounts,
     },
     kovan: {
-      url: process.env.KOVAN_RPC || "https://kovan.infura.io/v3/9f3370d63f484b24a73fc28c6b487ee4",
+      url: process.env.KOVAN_RPC || "https://kovan.infura.io/v3/XXX",
       accounts,
     },
     mumbai: {
-      url: process.env.MUMBAI_RPC || "https://polygon-mumbai.infura.io/v3/9f3370d63f484b24a73fc28c6b487ee4",
+      url: process.env.MUMBAI_RPC || "https://polygon-mumbai.infura.io/v3/XXX",
       accounts,
     }
   };

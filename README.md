@@ -27,6 +27,10 @@ This is the cross chain flow for the guardian contracts, in the first part, we a
 
 Once that process is completed and there are 88 guardians in the parent chain and 8888 tokens in the child chain. Then we move to the next phase which is allowing them to do cross chain transfer. 
 
+## Cross chain message details
+The message that gets passed is the token id of the guardian and the attribute set.
+The attribute set denotes the zodiac and the power of the guardian. This cannot be computed from token id because 
+we utilize the Chainlink VRF to randomize to increase fairness.
 
 ## Cross Chain Future Transport 
 

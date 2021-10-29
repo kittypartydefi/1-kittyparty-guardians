@@ -140,7 +140,7 @@ interface KPL2AFxTunnelInterface extends ethers.utils.Interface {
   ): Result;
 
   events: {
-    "AwakenTheMinions(uint256,uint256)": EventFragment;
+    "AwakenTheMinions(uint256,uint16)": EventFragment;
     "MessageSent(bytes)": EventFragment;
     "RoleAdminChanged(bytes32,bytes32,bytes32)": EventFragment;
     "RoleGranted(bytes32,address,address)": EventFragment;
@@ -157,7 +157,7 @@ interface KPL2AFxTunnelInterface extends ethers.utils.Interface {
 }
 
 export type AwakenTheMinionsEvent = TypedEvent<
-  [BigNumber, BigNumber] & { tokenId: BigNumber; attributeSet: BigNumber }
+  [BigNumber, number] & { tokenId: BigNumber; attributeSet: number }
 >;
 
 export type MessageSentEvent = TypedEvent<[string] & { message: string }>;
@@ -411,20 +411,20 @@ export class KPL2AFxTunnel extends BaseContract {
   };
 
   filters: {
-    "AwakenTheMinions(uint256,uint256)"(
+    "AwakenTheMinions(uint256,uint16)"(
       tokenId?: null,
       attributeSet?: null
     ): TypedEventFilter<
-      [BigNumber, BigNumber],
-      { tokenId: BigNumber; attributeSet: BigNumber }
+      [BigNumber, number],
+      { tokenId: BigNumber; attributeSet: number }
     >;
 
     AwakenTheMinions(
       tokenId?: null,
       attributeSet?: null
     ): TypedEventFilter<
-      [BigNumber, BigNumber],
-      { tokenId: BigNumber; attributeSet: BigNumber }
+      [BigNumber, number],
+      { tokenId: BigNumber; attributeSet: number }
     >;
 
     "MessageSent(bytes)"(

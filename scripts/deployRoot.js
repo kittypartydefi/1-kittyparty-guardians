@@ -7,16 +7,16 @@ const { config, ethers } = require("hardhat");
 const { Contract } = require('ethers');
 const fs = require('fs');
 const hre = require("hardhat")
-const checkpointManager = '0x2890bA17EfE978480615e330ecB65333b880928e';
-const FxRoot = '0x3d1d3E34f7fB6D26245E6640E1c50710eFFf15bA';
-const daoTreasury = "0x90Bd364a719493B33dCC31233D1032b3AC686430";
+const checkpointManager = '';
+const FxRoot = '0xfe5e5D361b2ad62c541bAb87C45a0B9B018389a2';
+const daoTreasury = "0x6E59B243B9A534E63E39a7debb6658d5A4806A8C";
 async function main() {
   const [deployer] = await ethers.getSigners();
 
   //deploy the yield generator contractor
-  const KPL1FxTunnel = await ethers.getContractFactory("KPL1FxTunnel");
-  const kPL1FxTunnel = await KPL1FxTunnel.deploy(checkpointManager, FxRoot);
-  console.log("Deploying kPL1FxTunnel ...", kPL1FxTunnel.address);
+  // const KPL1FxTunnel = await ethers.getContractFactory("KPL1FxTunnel");
+  // const kPL1FxTunnel = await KPL1FxTunnel.deploy(checkpointManager, FxRoot);
+  // console.log("Deploying kPL1FxTunnel ...", kPL1FxTunnel.address);
 
   const KPL1GuardianNFT = await ethers.getContractFactory("KPL1GuardianNFT");
   const kPL1GuardianNFT = await KPL1GuardianNFT.deploy(daoTreasury);
@@ -28,7 +28,7 @@ async function main() {
   //And further that we can mint in child chain
   return {
           'kPL1GuardianNFT':kPL1GuardianNFT.address,
-          'kPL1FxTunnel' : kPL1FxTunnel.address
+          // 'kPL1FxTunnel' : kPL1FxTunnel.address
         };
   
 }
@@ -51,15 +51,9 @@ function delay(ms) {
 // and properly handle errors.
   main()
   .then( async (deployedData) => {
-    await delay(90000);
-    // await verify(deployedData.kPL1FxTunnel, checkpointManager, FxRoot); //Verify the master contract
-    await verify(deployedData.kPL1GuardianNFT, daoTreasury); //Verify the master contract
-
-    // await verify(deployedData.Kittens); //Verify the master contract
-    // await verify(deployedData.factoryAddress, deployedData.masterAddress, deployedData.accountContractAddress, deployedData.Kittens, "0xCd746dbAec699A3E0B42e411909e67Ad8BbCC315", "0xCd746dbAec699A3E0B42e411909e67Ad8BbCC315"); //Verify the factory contract
-    // await verify(deployedData.dai); //Verify the DAI address
-    // await verify(deployedData.accountContractAddress); //Verify the accountContractAddress address
-    // await verify(deployedData.kittyPartyYieldGeneratorZapper); //Verify the kittyPartyYieldGeneratorZapper address
+    // await delay(50000);
+    //await verify(deployedData.kPL1FxTunnel, checkpointManager, FxRoot); //Verify the master contract
+    // await verify(deployedData.kPL1GuardianNFT, daoTreasury); //Verify the master contract
     process.exit(0)
   })
   .catch(error => {
@@ -70,7 +64,7 @@ function delay(ms) {
   // function saveFrontendFiles(contract: Contract, contractName: string) {
   //   console.log('Adding to frontend',contractName)
   //   fs.appendFileSync(
-  //     `/home/wizgot/my-projects/1-kittyparty-ui/contracts/${contractName}.address.js`,
+  //     `/home/corrino/my-projects/1-kittyparty-ui/contracts/${contractName}.address.js`,
   //     `module.exports = '${contract.address}'\n`
   //   );
   // }

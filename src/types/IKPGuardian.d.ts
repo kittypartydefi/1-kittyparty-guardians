@@ -20,24 +20,27 @@ import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 
 interface IKPGuardianInterface extends ethers.utils.Interface {
   functions: {
+    "getAttributes(uint256)": FunctionFragment;
     "isGuardian(address)": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
-    "tokenURI(uint256)": FunctionFragment;
   };
 
+  encodeFunctionData(
+    functionFragment: "getAttributes",
+    values: [BigNumberish]
+  ): string;
   encodeFunctionData(functionFragment: "isGuardian", values: [string]): string;
   encodeFunctionData(
     functionFragment: "ownerOf",
     values: [BigNumberish]
   ): string;
-  encodeFunctionData(
-    functionFragment: "tokenURI",
-    values: [BigNumberish]
-  ): string;
 
+  decodeFunctionResult(
+    functionFragment: "getAttributes",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "isGuardian", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "ownerOf", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "tokenURI", data: BytesLike): Result;
 
   events: {};
 }
@@ -86,6 +89,11 @@ export class IKPGuardian extends BaseContract {
   interface: IKPGuardianInterface;
 
   functions: {
+    getAttributes(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[number] & { attributeSet: number }>;
+
     isGuardian(
       _guardian: string,
       overrides?: CallOverrides
@@ -95,58 +103,59 @@ export class IKPGuardian extends BaseContract {
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[string]>;
-
-    tokenURI(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
   };
+
+  getAttributes(
+    tokenId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<number>;
 
   isGuardian(_guardian: string, overrides?: CallOverrides): Promise<boolean>;
 
   ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
-  tokenURI(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-
   callStatic: {
+    getAttributes(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<number>;
+
     isGuardian(_guardian: string, overrides?: CallOverrides): Promise<boolean>;
 
     ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-
-    tokenURI(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
   };
 
   filters: {};
 
   estimateGas: {
+    getAttributes(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     isGuardian(
       _guardian: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     ownerOf(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    tokenURI(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
+    getAttributes(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     isGuardian(
       _guardian: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     ownerOf(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    tokenURI(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;

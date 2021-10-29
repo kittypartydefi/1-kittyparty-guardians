@@ -97,7 +97,7 @@ contract KPL2AGuardianNFT is AccessControl, ERC721URIStorage, ERC721Enumerable {
 
     /*** @dev Schedule mint for the apprentices called by the guardian from mainnet
     */
-    function awakenTribe(uint guardianId, uint8 _attributeSet) external onlyRole(L2A_TUNNEL_ROLE) {
+    function awakenTribe(uint guardianId, uint16 _attributeSet) external onlyRole(L2A_TUNNEL_ROLE) {
         require(guardianId >=0 && guardianId <= 87, "Invalid ID");
         awakenedGuardians[guardianId] =  true;
         guardianTribe[guardianId].startIndex = 0;

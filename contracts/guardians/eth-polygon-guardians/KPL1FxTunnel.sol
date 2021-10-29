@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 import { FxBaseRootTunnel } from '../../tunnel/FxBaseRootTunnel.sol';
 
 interface IKPGuardian {
-    function tokenURI(uint tokenId) external view returns (string memory);
+    function getAttributes(uint tokenId) external view returns (uint16 attributeSet);
     function ownerOf(uint256 tokenId) external view returns (address);
     function isGuardian(address _guardian) external view returns(bool);
 }
@@ -25,7 +25,7 @@ contract KPL1FxTunnel is AccessControl, FxBaseRootTunnel {
     function bringForthTheApprentices(uint tokenId) external {
         require(guardian.ownerOf(tokenId) == msg.sender);
         require(guardian.isGuardian(msg.sender));
-        _sendMessageToChild(abi.encode(tokenId, guardian.tokenURI(tokenId)));
+        _sendMessageToChild(abi.encode(tokenId, guardian.getAttributes(tokenId)));
     }
 
     function setKPGuardian(IKPGuardian _kpGuardian) external onlyRole(DEFAULT_ADMIN_ROLE) {

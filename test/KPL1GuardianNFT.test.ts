@@ -46,8 +46,8 @@ describe('Kitty Party Guardian NFT Root', function () {
   
     beforeEach('deploy KittyPartyRootGuardianNFT', async () => {
       kpRootGuardianNFT = await loadFixture(fixture);
-      guardianPrice = parseFloat(ethers.utils.formatEther(await kpRootGuardianNFT.guardianPrice()));
-      earlyPrice = parseFloat(ethers.utils.formatEther(await kpRootGuardianNFT.earlyPrice()));
+      guardianPrice = parseFloat(ethers.utils.formatEther(await kpRootGuardianNFT.GUARDIAN_PRICE()));
+      earlyPrice = parseFloat(ethers.utils.formatEther(await kpRootGuardianNFT.EARLY_PRICE()));
     })
 
     it('Should have correct name and symbol', async () => {

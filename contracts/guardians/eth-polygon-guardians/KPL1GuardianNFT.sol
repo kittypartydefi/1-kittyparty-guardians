@@ -8,7 +8,8 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@chainlink/contracts/src/v0.8/VRFConsumerBase.sol";
 
 /** 
- * @title FxStateRootTunnel
+ * @title Guardians on mainnet
+ * @notice Mints and allows for cross chain transfers of the Guardian NFT
  */
 contract KPL1GuardianNFT is AccessControl, ERC721URIStorage, ERC721Enumerable, VRFConsumerBase {
     using Counters for Counters.Counter;
@@ -19,8 +20,8 @@ contract KPL1GuardianNFT is AccessControl, ERC721URIStorage, ERC721Enumerable, V
     string public baseURI;
     address public daoTreasury;
     address public crossChainAdapter;
-    uint public constant guardianPrice = 0.088 ether;
-    uint public constant earlyPrice = 0.0088 ether;
+    uint public constant GUARDIAN_PRICE = 0.088 ether;
+    uint public constant EARLY_PRICE = 0.0088 ether;
     uint public creationTime = block.timestamp;
     uint public messageFromTheUniverse;
     uint public chosenLeader;
@@ -30,7 +31,8 @@ contract KPL1GuardianNFT is AccessControl, ERC721URIStorage, ERC721Enumerable, V
     uint256 internal fee;
 
     mapping(address => uint) pendingWithdrawals;
-    mapping(address => bool) guardians; //multiple attributes
+    mapping(address => bool) guardians;
+    mapping(uint => uint16) guardianAttributes;
     mapping(address => bool) earlyBirds;
     
     event SetEarlyBirds(address[], uint);
@@ -42,22 +44,26 @@ contract KPL1GuardianNFT is AccessControl, ERC721URIStorage, ERC721Enumerable, V
     event SetBaseURI(string);
     event SetDAOTreasury(address);
     event etherealMessageReceived(uint);
+    event SetAttributes(uint, uint16);
 
     constructor(address _daoTreasury) 
-        ERC721("PPGUARD", "PPG")  
-        VRFConsumerBase(
-            0xdD3782915140c8f3b190B5D67eAc6dc5760C46E9, // VRF Coordinator
-            0xa36085F69e2889c224210F603D836748e7dC0088  // LINK Token
-        ){
-        keyHash = 0x6c3699283bda56ad74f6b855546325b68d482e983852a7a82979cc4807b641f4;
-        fee = 0.1 * 10 ** 18;
+        ERC721("Kitty Party Guardian", "KPG")
+        VRFConsumerBase
+        (
+            0xf0d54349aDdcf704F77AE15b96510dEA15cb7952, // VRF Coordinator
+            0x514910771AF9Ca656af840dff83E8264EcF986CA  // LINK Token
+        ) 
+    {
+        keyHash = 0xAA77729D3466CA35AE8D28B3BBAC7CC36A5031EFDC430821C02BC31A238AF445;
+        fee = 2 * 10 ** 18;
+        
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _setupRole(DAO_AGENT_ROLE, _daoTreasury);
         daoTreasury = _daoTreasury;
     }
 
-    modifier crossChainActive() {
-        require(block.timestamp >= creationTime + 365 days, "Cross Chain Mint not active yet!");
+    modifier onlyAfterCrossChainActive() {
+        require(block.timestamp >= creationTime + 58 days, "Cross Chain Mint not active yet!");
         _;
     }
 
@@ -68,11 +74,12 @@ contract KPL1GuardianNFT is AccessControl, ERC721URIStorage, ERC721Enumerable, V
 
     function awakenGuardian() external payable {
         require(totalSupply() < 87);
+        require(block.timestamp > 1635552000);
         require(balanceOf(msg.sender) == 0);
-        require(msg.value >= earlyPrice, "Not enough ether");
+        require(msg.value >= EARLY_PRICE, "Not enough ether");
 
         if(!earlyBirds[msg.sender] || (block.timestamp > creationTime + 48 hours)) {
-            require(msg.value >= guardianPrice, "Not enough ether");
+            require(msg.value >= GUARDIAN_PRICE, "Not enough ether");
         }
 
         uint tokenId = _tokenIdCounter.current();
@@ -87,18 +94,6 @@ contract KPL1GuardianNFT is AccessControl, ERC721URIStorage, ERC721Enumerable, V
         payable(msg.sender).transfer(amount);
     }
 
-    function isGuardian(address _candidateAddress) public view returns(bool) {
-        return guardians[_candidateAddress];
-    }
-
-    function isEarlyBird(address _checkIfEarlyBird)  public view returns(bool) {
-        return earlyBirds[_checkIfEarlyBird];
-    }
-    
-    function _baseURI() internal view virtual override returns (string memory) {
-        return baseURI;
-    }
-
     function addEarlyBirds(address[] memory _earlyBirdAddresses) external onlyRole(DEFAULT_ADMIN_ROLE) {
         for(uint i=0; i < _earlyBirdAddresses.length; ++i) {
             earlyBirds[_earlyBirdAddresses[i]] = true;
@@ -111,21 +106,6 @@ contract KPL1GuardianNFT is AccessControl, ERC721URIStorage, ERC721Enumerable, V
         emit SetEarlyBird(_earlyBirdAddress, earlyBirds[_earlyBirdAddress]);
     }
 
-    function setDAOTreasury(address _daoTreasury) external onlyRole(DAO_AGENT_ROLE) {
-        daoTreasury = _daoTreasury;
-        emit SetDAOTreasury(_daoTreasury);
-    }
-
-    function setCrossChainAdapter(address _crossChainAdapter) external onlyRole(DAO_AGENT_ROLE) {
-        crossChainAdapter = _crossChainAdapter;
-        emit SetCrossChainAdapter(_crossChainAdapter);
-    }
-
-    function setBaseURI(string memory __baseURI) external onlyRole(DAO_AGENT_ROLE) {
-        baseURI = __baseURI;
-        emit SetBaseURI(__baseURI);
-    }
-
     function setKeyHash(bytes32 _keyHash) external onlyRole(DEFAULT_ADMIN_ROLE) {
         keyHash = _keyHash;
         emit SetChainlinkKeyHash(_keyHash);
@@ -136,44 +116,53 @@ contract KPL1GuardianNFT is AccessControl, ERC721URIStorage, ERC721Enumerable, V
         emit SetChainlinkFee(_fee);
     }
 
-    /** 
-     * Requests randomness from the chainlink cryptoverse
-     */
-    function getRandomNumber() external onlyRole(DAO_AGENT_ROLE) returns (bytes32 requestId) {
-        require(LINK.balanceOf(address(this)) >= fee, "Not enough LINK");
-        return requestRandomness(keyHash, fee);
+    function setDAOTreasury(address _daoTreasury) external onlyRole(DAO_AGENT_ROLE) {
+        daoTreasury = _daoTreasury;
+        emit SetDAOTreasury(_daoTreasury);
     }
 
-    /**
-     * @notice messageFromTheUniverse is used as a seed to ensure fairness in our NFT assignment procedure
-     * @notice chosenLeader is used to find a leader amongst the guardians every human epoch
-     */
-    function fulfillRandomness(bytes32, uint256 randomness) internal override {
-        messageFromTheUniverse = randomness;
-        chosenLeader = randomness % currentGuardiansInThisNetwork; //pick one leader from all the guardians here
-        emit etherealMessageReceived(messageFromTheUniverse);
+    function setCrossChainAdapter(address _crossChainAdapter) external onlyRole(DAO_AGENT_ROLE) {
+        crossChainAdapter = _crossChainAdapter;
+        emit SetCrossChainAdapter(_crossChainAdapter);
     }
 
+    function setAttributes(uint _tokenId, uint16 _attributeSet) external onlyRole(DAO_AGENT_ROLE) {
+        _setAttributes(_tokenId, _attributeSet);
+    }
 
-    /* @dev This allows an adapter in future to mint the necessary tokens
-    * if they are not locked in a deposit account in the adapter
+    function getAttributes(uint _tokenId) external view returns(uint16) {
+        return guardianAttributes[_tokenId];
+    }
+    
+    function setBaseURI(string memory __baseURI) external onlyRole(DAO_AGENT_ROLE) {
+        baseURI = __baseURI;
+        emit SetBaseURI(__baseURI);
+    }
+
+    /*@dev This allows an adapter in future to mint the necessary tokens
+    * @dev If they are not locked in a deposit account in the adapter
+    * @dev The apprentice upon becoming a guardian will have his attributeSet same as parent guardian
     */
     function mint(
         address to, 
         uint _tokenId, 
-        string memory _tokenURI
+        uint16 _attributeSet
     )
-            public 
-            onlyCrossChainAdapter() 
-            crossChainActive() 
+        public 
+        onlyCrossChainAdapter() 
+        onlyAfterCrossChainActive() 
     {
         require(totalSupply() < 8888);
         currentGuardiansInThisNetwork++;
         _safeMint(to, _tokenId);
-        _setTokenURI(_tokenId, _tokenURI);
+        _setAttributes(_tokenId, _attributeSet);
     }
 
-    function burn(uint256 tokenId) public onlyCrossChainAdapter() crossChainActive() {
+    function burn(uint256 tokenId) 
+        public 
+        onlyCrossChainAdapter() 
+        onlyAfterCrossChainActive() 
+    {
         require(tokenId <= 87);
         currentGuardiansInThisNetwork--;        
         _burn(tokenId);
@@ -197,6 +186,38 @@ contract KPL1GuardianNFT is AccessControl, ERC721URIStorage, ERC721Enumerable, V
         return super.supportsInterface(interfaceId);
     }
 
+    function isGuardian(address _candidateAddress) public view returns(bool) {
+        return guardians[_candidateAddress];
+    }
+
+    function isEarlyBird(address _checkIfEarlyBird)  public view returns(bool) {
+        return earlyBirds[_checkIfEarlyBird];
+    }
+
+    /** 
+     * Requests randomness from the chainlink cryptoverse
+     */
+    function getRandomNumber() external onlyRole(DAO_AGENT_ROLE) returns (bytes32 requestId) {
+        require(LINK.balanceOf(address(this)) >= fee, "Not enough LINK");
+        return requestRandomness(keyHash, fee);
+    }
+
+    /**
+     * @notice messageFromTheUniverse is used as a seed to ensure fairness in our NFT assignment procedure
+     * @notice chosenLeader is used to find a leader amongst the guardians every human epoch
+     */
+    function fulfillRandomness(
+        bytes32, 
+        uint256 randomness
+    ) 
+        internal 
+        override 
+    {
+        messageFromTheUniverse = randomness;
+        chosenLeader = randomness % currentGuardiansInThisNetwork; 
+        emit etherealMessageReceived(messageFromTheUniverse);
+    }
+
     function _beforeTokenTransfer(
         address from, 
         address to, 
@@ -215,5 +236,17 @@ contract KPL1GuardianNFT is AccessControl, ERC721URIStorage, ERC721Enumerable, V
 
     function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
         super._burn(tokenId);
+    }
+        
+    function _baseURI() internal view virtual override returns (string memory) {
+        return baseURI;
+    }
+
+    /*** 
+    *@dev initialize and upgrade the attributes of the guardian
+    */
+    function _setAttributes(uint _tokenId, uint16 _attributeSet) private {
+        guardianAttributes[_tokenId] = _attributeSet;
+        emit SetAttributes(_tokenId, _attributeSet);
     }
 }

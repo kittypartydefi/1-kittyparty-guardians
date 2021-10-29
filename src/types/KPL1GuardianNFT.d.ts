@@ -23,6 +23,8 @@ import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 interface KPL1GuardianNFTInterface extends ethers.utils.Interface {
   functions: {
     "DEFAULT_ADMIN_ROLE()": FunctionFragment;
+    "EARLY_PRICE()": FunctionFragment;
+    "GUARDIAN_PRICE()": FunctionFragment;
     "addEarlyBirds(address[])": FunctionFragment;
     "addNewEarlyBird(address)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
@@ -35,18 +37,17 @@ interface KPL1GuardianNFTInterface extends ethers.utils.Interface {
     "crossChainAdapter()": FunctionFragment;
     "currentGuardiansInThisNetwork()": FunctionFragment;
     "daoTreasury()": FunctionFragment;
-    "earlyPrice()": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
+    "getAttributes(uint256)": FunctionFragment;
     "getRandomNumber()": FunctionFragment;
     "getRoleAdmin(bytes32)": FunctionFragment;
     "grantRole(bytes32,address)": FunctionFragment;
-    "guardianPrice()": FunctionFragment;
     "hasRole(bytes32,address)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "isEarlyBird(address)": FunctionFragment;
     "isGuardian(address)": FunctionFragment;
     "messageFromTheUniverse()": FunctionFragment;
-    "mint(address,uint256,string)": FunctionFragment;
+    "mint(address,uint256,uint16)": FunctionFragment;
     "name()": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
     "rawFulfillRandomness(bytes32,uint256)": FunctionFragment;
@@ -54,6 +55,7 @@ interface KPL1GuardianNFTInterface extends ethers.utils.Interface {
     "revokeRole(bytes32,address)": FunctionFragment;
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
+    "setAttributes(uint256,uint16)": FunctionFragment;
     "setBaseURI(string)": FunctionFragment;
     "setChainlinkFee(uint256)": FunctionFragment;
     "setCrossChainAdapter(address)": FunctionFragment;
@@ -71,6 +73,14 @@ interface KPL1GuardianNFTInterface extends ethers.utils.Interface {
 
   encodeFunctionData(
     functionFragment: "DEFAULT_ADMIN_ROLE",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "EARLY_PRICE",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "GUARDIAN_PRICE",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -113,11 +123,11 @@ interface KPL1GuardianNFTInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "earlyPrice",
-    values?: undefined
+    functionFragment: "getApproved",
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "getApproved",
+    functionFragment: "getAttributes",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -131,10 +141,6 @@ interface KPL1GuardianNFTInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "grantRole",
     values: [BytesLike, string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "guardianPrice",
-    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "hasRole",
@@ -152,7 +158,7 @@ interface KPL1GuardianNFTInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "mint",
-    values: [string, BigNumberish, string]
+    values: [string, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(
@@ -178,6 +184,10 @@ interface KPL1GuardianNFTInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "setApprovalForAll",
     values: [string, boolean]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setAttributes",
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "setBaseURI", values: [string]): string;
   encodeFunctionData(
@@ -231,6 +241,14 @@ interface KPL1GuardianNFTInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "EARLY_PRICE",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "GUARDIAN_PRICE",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "addEarlyBirds",
     data: BytesLike
   ): Result;
@@ -266,9 +284,12 @@ interface KPL1GuardianNFTInterface extends ethers.utils.Interface {
     functionFragment: "daoTreasury",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "earlyPrice", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getApproved",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getAttributes",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -280,10 +301,6 @@ interface KPL1GuardianNFTInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "grantRole", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "guardianPrice",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "hasRole", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isApprovedForAll",
@@ -316,6 +333,10 @@ interface KPL1GuardianNFTInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "setApprovalForAll",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setAttributes",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "setBaseURI", data: BytesLike): Result;
@@ -365,6 +386,7 @@ interface KPL1GuardianNFTInterface extends ethers.utils.Interface {
     "RoleAdminChanged(bytes32,bytes32,bytes32)": EventFragment;
     "RoleGranted(bytes32,address,address)": EventFragment;
     "RoleRevoked(bytes32,address,address)": EventFragment;
+    "SetAttributes(uint256,uint16)": EventFragment;
     "SetBaseURI(string)": EventFragment;
     "SetChainlinkFee(uint256)": EventFragment;
     "SetChainlinkKeyHash(bytes32)": EventFragment;
@@ -382,6 +404,7 @@ interface KPL1GuardianNFTInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "RoleAdminChanged"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RoleGranted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RoleRevoked"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetAttributes"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetBaseURI"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetChainlinkFee"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetChainlinkKeyHash"): EventFragment;
@@ -424,6 +447,10 @@ export type RoleGrantedEvent = TypedEvent<
 
 export type RoleRevokedEvent = TypedEvent<
   [string, string, string] & { role: string; account: string; sender: string }
+>;
+
+export type SetAttributesEvent = TypedEvent<
+  [BigNumber, number] & { arg0: BigNumber; arg1: number }
 >;
 
 export type SetBaseURIEvent = TypedEvent<[string] & { arg0: string }>;
@@ -502,6 +529,10 @@ export class KPL1GuardianNFT extends BaseContract {
   functions: {
     DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<[string]>;
 
+    EARLY_PRICE(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    GUARDIAN_PRICE(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     addEarlyBirds(
       _earlyBirdAddresses: string[],
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -543,12 +574,15 @@ export class KPL1GuardianNFT extends BaseContract {
 
     daoTreasury(overrides?: CallOverrides): Promise<[string]>;
 
-    earlyPrice(overrides?: CallOverrides): Promise<[BigNumber]>;
-
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[string]>;
+
+    getAttributes(
+      _tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[number]>;
 
     getRandomNumber(
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -561,8 +595,6 @@ export class KPL1GuardianNFT extends BaseContract {
       account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
-
-    guardianPrice(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     hasRole(
       role: BytesLike,
@@ -591,7 +623,7 @@ export class KPL1GuardianNFT extends BaseContract {
     mint(
       to: string,
       _tokenId: BigNumberish,
-      _tokenURI: string,
+      _attributeSet: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -638,6 +670,12 @@ export class KPL1GuardianNFT extends BaseContract {
     setApprovalForAll(
       operator: string,
       approved: boolean,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    setAttributes(
+      _tokenId: BigNumberish,
+      _attributeSet: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -705,6 +743,10 @@ export class KPL1GuardianNFT extends BaseContract {
 
   DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
 
+  EARLY_PRICE(overrides?: CallOverrides): Promise<BigNumber>;
+
+  GUARDIAN_PRICE(overrides?: CallOverrides): Promise<BigNumber>;
+
   addEarlyBirds(
     _earlyBirdAddresses: string[],
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -744,12 +786,15 @@ export class KPL1GuardianNFT extends BaseContract {
 
   daoTreasury(overrides?: CallOverrides): Promise<string>;
 
-  earlyPrice(overrides?: CallOverrides): Promise<BigNumber>;
-
   getApproved(
     tokenId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<string>;
+
+  getAttributes(
+    _tokenId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<number>;
 
   getRandomNumber(
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -762,8 +807,6 @@ export class KPL1GuardianNFT extends BaseContract {
     account: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
-
-  guardianPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
   hasRole(
     role: BytesLike,
@@ -792,7 +835,7 @@ export class KPL1GuardianNFT extends BaseContract {
   mint(
     to: string,
     _tokenId: BigNumberish,
-    _tokenURI: string,
+    _attributeSet: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -836,6 +879,12 @@ export class KPL1GuardianNFT extends BaseContract {
   setApprovalForAll(
     operator: string,
     approved: boolean,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  setAttributes(
+    _tokenId: BigNumberish,
+    _attributeSet: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -900,6 +949,10 @@ export class KPL1GuardianNFT extends BaseContract {
   callStatic: {
     DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
 
+    EARLY_PRICE(overrides?: CallOverrides): Promise<BigNumber>;
+
+    GUARDIAN_PRICE(overrides?: CallOverrides): Promise<BigNumber>;
+
     addEarlyBirds(
       _earlyBirdAddresses: string[],
       overrides?: CallOverrides
@@ -936,12 +989,15 @@ export class KPL1GuardianNFT extends BaseContract {
 
     daoTreasury(overrides?: CallOverrides): Promise<string>;
 
-    earlyPrice(overrides?: CallOverrides): Promise<BigNumber>;
-
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
+
+    getAttributes(
+      _tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<number>;
 
     getRandomNumber(overrides?: CallOverrides): Promise<string>;
 
@@ -952,8 +1008,6 @@ export class KPL1GuardianNFT extends BaseContract {
       account: string,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    guardianPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
     hasRole(
       role: BytesLike,
@@ -982,7 +1036,7 @@ export class KPL1GuardianNFT extends BaseContract {
     mint(
       to: string,
       _tokenId: BigNumberish,
-      _tokenURI: string,
+      _attributeSet: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1026,6 +1080,12 @@ export class KPL1GuardianNFT extends BaseContract {
     setApprovalForAll(
       operator: string,
       approved: boolean,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setAttributes(
+      _tokenId: BigNumberish,
+      _attributeSet: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1171,6 +1231,16 @@ export class KPL1GuardianNFT extends BaseContract {
       { role: string; account: string; sender: string }
     >;
 
+    "SetAttributes(uint256,uint16)"(
+      undefined?: null,
+      undefined?: null
+    ): TypedEventFilter<[BigNumber, number], { arg0: BigNumber; arg1: number }>;
+
+    SetAttributes(
+      undefined?: null,
+      undefined?: null
+    ): TypedEventFilter<[BigNumber, number], { arg0: BigNumber; arg1: number }>;
+
     "SetBaseURI(string)"(
       undefined?: null
     ): TypedEventFilter<[string], { arg0: string }>;
@@ -1271,6 +1341,10 @@ export class KPL1GuardianNFT extends BaseContract {
   estimateGas: {
     DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
 
+    EARLY_PRICE(overrides?: CallOverrides): Promise<BigNumber>;
+
+    GUARDIAN_PRICE(overrides?: CallOverrides): Promise<BigNumber>;
+
     addEarlyBirds(
       _earlyBirdAddresses: string[],
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1312,10 +1386,13 @@ export class KPL1GuardianNFT extends BaseContract {
 
     daoTreasury(overrides?: CallOverrides): Promise<BigNumber>;
 
-    earlyPrice(overrides?: CallOverrides): Promise<BigNumber>;
-
     getApproved(
       tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getAttributes(
+      _tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1333,8 +1410,6 @@ export class KPL1GuardianNFT extends BaseContract {
       account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
-
-    guardianPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
     hasRole(
       role: BytesLike,
@@ -1363,7 +1438,7 @@ export class KPL1GuardianNFT extends BaseContract {
     mint(
       to: string,
       _tokenId: BigNumberish,
-      _tokenURI: string,
+      _attributeSet: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1410,6 +1485,12 @@ export class KPL1GuardianNFT extends BaseContract {
     setApprovalForAll(
       operator: string,
       approved: boolean,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    setAttributes(
+      _tokenId: BigNumberish,
+      _attributeSet: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1480,6 +1561,10 @@ export class KPL1GuardianNFT extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    EARLY_PRICE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    GUARDIAN_PRICE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     addEarlyBirds(
       _earlyBirdAddresses: string[],
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1524,10 +1609,13 @@ export class KPL1GuardianNFT extends BaseContract {
 
     daoTreasury(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    earlyPrice(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     getApproved(
       tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getAttributes(
+      _tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1545,8 +1633,6 @@ export class KPL1GuardianNFT extends BaseContract {
       account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
-
-    guardianPrice(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     hasRole(
       role: BytesLike,
@@ -1577,7 +1663,7 @@ export class KPL1GuardianNFT extends BaseContract {
     mint(
       to: string,
       _tokenId: BigNumberish,
-      _tokenURI: string,
+      _attributeSet: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1624,6 +1710,12 @@ export class KPL1GuardianNFT extends BaseContract {
     setApprovalForAll(
       operator: string,
       approved: boolean,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setAttributes(
+      _tokenId: BigNumberish,
+      _attributeSet: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
