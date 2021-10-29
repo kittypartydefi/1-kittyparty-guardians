@@ -37,11 +37,7 @@ contract KPL2AFxTunnel is AccessControl, FxBaseChildTunnel {
     {
         latestStateId = stateId;
         latestRootMessageSender = sender;
-<<<<<<< HEAD
         (uint tokenId, uint16 attributeSet) = abi.decode(data,(uint,uint16));
-=======
-        (uint tokenId, uint attributeSet) = abi.decode(data,(uint,uint));
->>>>>>> 582ce16dbf7a2cc61b65e651aa66cda495911f9b
 
         emit AwakenTheMinions(tokenId, attributeSet);
         guardian.awakenTribe(tokenId, attributeSet);

@@ -54,11 +54,12 @@ describe('Kitty Party Guardian NFT Root', function () {
       const tokenName = await kpRootGuardianNFT.name();
       const tokenSymbol = await kpRootGuardianNFT.symbol();
 
-      expect(tokenName).to.equal("PPGUARD");
-      expect(tokenSymbol).to.equal("PPG");
+      expect(tokenName).to.equal("Kitty Party Guardian");
+      expect(tokenSymbol).to.equal("KPG");
     })
 
     it('Should be able to awaken guardians', async () => {
+      await network.provider.send("evm_increaseTime", [3600*12]);
       await kpRootGuardianNFT.connect(kitten1).awakenGuardian({value: ethers.utils.parseEther(guardianPrice.toString())});
       const kitten1NFTbalance = await kpRootGuardianNFT.balanceOf(kitten1.address);
 
@@ -70,12 +71,14 @@ describe('Kitty Party Guardian NFT Root', function () {
     });
 
     it('Should record minter address as a guardian', async () => {
+      await network.provider.send("evm_increaseTime", [3600*12]);
       await kpRootGuardianNFT.connect(kitten1).awakenGuardian({value: ethers.utils.parseEther(guardianPrice.toString())});
 
       expect(await kpRootGuardianNFT.isGuardian(kitten1.address)).to.equal(true);
     });
 
     it('Should have correct token URI', async () => {
+      await network.provider.send("evm_increaseTime", [3600*12]);
       await kpRootGuardianNFT.connect(kitten1).awakenGuardian({value: ethers.utils.parseEther(guardianPrice.toString())});      
       
       await kpRootGuardianNFT.connect(treasury).setBaseURI(sampleURI);
@@ -85,6 +88,7 @@ describe('Kitty Party Guardian NFT Root', function () {
     });
 
     it('Should pay 0.088 eth to awaken a guardian', async () => {
+      await network.provider.send("evm_increaseTime", [3600*12]);
       await network.provider.request({
         method: "hardhat_impersonateAccount",
         params: [kpRootGuardianNFT.address],
@@ -107,6 +111,7 @@ describe('Kitty Party Guardian NFT Root', function () {
     });
 
     it('Should not awaken guardian for less than 0.088 eth', async () => {
+      await network.provider.send("evm_increaseTime", [3600*12]);
       await expect(
         kpRootGuardianNFT.connect(kitten1).awakenGuardian({value: ethers.utils.parseEther("0.08")})
       ).to.be.revertedWith("Not enough ether");
@@ -139,6 +144,7 @@ describe('Kitty Party Guardian NFT Root', function () {
     });
 
     it('Should be able to awaken guardian to early bird for 0.0088 eth', async () => {
+      await network.provider.send("evm_increaseTime", [3600*12]);
       await kpRootGuardianNFT.addNewEarlyBird(kitten1.address);
 
       const initialKittenBalance = ethers.utils.formatEther(await kitten1.getBalance());
@@ -160,6 +166,7 @@ describe('Kitty Party Guardian NFT Root', function () {
     });
 
     it('Should not awaken more than one guardian per address', async () => {
+      await network.provider.send("evm_increaseTime", [3600*12]);
       await kpRootGuardianNFT.connect(kitten1).awakenGuardian({value: ethers.utils.parseEther(guardianPrice.toString())});
       await expect(
         kpRootGuardianNFT.connect(kitten1).awakenGuardian({value: ethers.utils.parseEther(guardianPrice.toString())})
@@ -167,6 +174,7 @@ describe('Kitty Party Guardian NFT Root', function () {
     });
 
     it('Should be able to transfer guardian', async () => {
+      await network.provider.send("evm_increaseTime", [3600*12]);
       let kitten2NFTbalance = await kpRootGuardianNFT.balanceOf(kitten2.address);
       expect(kitten2NFTbalance.toString()).to.equal("0");
 
@@ -183,6 +191,7 @@ describe('Kitty Party Guardian NFT Root', function () {
     });
 
     it('Should not be able to transfer to another guardian', async () => {
+      await network.provider.send("evm_increaseTime", [3600*12]);
       await kpRootGuardianNFT.connect(kitten1).awakenGuardian({value: ethers.utils.parseEther(guardianPrice.toString())});
       await kpRootGuardianNFT.connect(kitten2).awakenGuardian({value: ethers.utils.parseEther(guardianPrice.toString())});
       
@@ -192,6 +201,7 @@ describe('Kitty Party Guardian NFT Root', function () {
     });
 
     it('Should not be able to burn guardian NFT', async () => {
+      await network.provider.send("evm_increaseTime", [3600*12]);
       await kpRootGuardianNFT.connect(kitten1).awakenGuardian({value: ethers.utils.parseEther(guardianPrice.toString())});
       await expect(
         kpRootGuardianNFT.connect(kitten1).transferFrom(kitten1.address, "0x0000000000000000000000000000000000000000", 0)
@@ -199,6 +209,7 @@ describe('Kitty Party Guardian NFT Root', function () {
     });
 
     it('Should allow only treasury to withdraw', async () => {
+      await network.provider.send("evm_increaseTime", [3600*12]);
       const initialTreasuryBalance = ethers.utils.formatEther(await treasury.getBalance());
 
       await kpRootGuardianNFT.connect(kitten1).awakenGuardian({value: ethers.utils.parseEther(guardianPrice.toString())});
