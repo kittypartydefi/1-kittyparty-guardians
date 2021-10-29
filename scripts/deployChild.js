@@ -58,22 +58,9 @@ function delay(ms) {
     await delay(80000);
     // await verify(deployedData.FxStateRootTunnel, checkpointManager, FxRoot); //Verify the master contract
     await verify(deployedData.kPL2AFxTunnel, FxChild); //Verify the master contract
-    // await verify(deployedData.Kittens); //Verify the master contract
-    // await verify(deployedData.factoryAddress, deployedData.masterAddress, deployedData.accountContractAddress, deployedData.Kittens, "0xCd746dbAec699A3E0B42e411909e67Ad8BbCC315", "0xCd746dbAec699A3E0B42e411909e67Ad8BbCC315"); //Verify the factory contract
-    // await verify(deployedData.dai); //Verify the DAI address
-    // await verify(deployedData.accountContractAddress); //Verify the accountContractAddress address
-    // await verify(deployedData.kittyPartyYieldGeneratorZapper); //Verify the kittyPartyYieldGeneratorZapper address
     process.exit(0)
   })
   .catch(error => {
     console.error(error);
     process.exit(1);
   });
-
-  // function saveFrontendFiles(contract: Contract, contractName: string) {
-  //   console.log('Adding to frontend',contractName)
-  //   fs.appendFileSync(
-  //     `/home/wizgot/my-projects/1-kittyparty-ui/contracts/${contractName}.address.js`,
-  //     `module.exports = '${contract.address}'\n`
-  //   );
-  // }
