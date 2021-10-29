@@ -70,19 +70,19 @@ module.exports = {
 if(process.env.MNEMONIC) {
   module.exports.networks = {
     mainnet: {
-      url: process.env.MAINNET_RPC || "https://mainnet.infura.io/v3/XXXX",
+      url: process.env.MAINNET_RPC || "https://mainnet.infura.io/v3/XX",
       accounts,
     },
     goerli: {
-      url: process.env.GOERLI_RPC || "https://goerli.infura.io/v3/XXX",
+      url: process.env.GOERLI_RPC || "https://goerli.infura.io/v3/XX",
       accounts,
     },
     rinkeby: {
-      url: process.env.RINKEBY_RPC || "https://rinkeby.infura.io/v3/XXX",
+      url: process.env.RINKEBY_RPC || "https://rinkeby.infura.io/v3/XX",
       accounts,
     },
     kovan: {
-      url: process.env.KOVAN_RPC || "https://kovan.infura.io/v3/XXX",
+      url: process.env.KOVAN_RPC || "https://kovan.infura.io/v3/XX",
       accounts,
     },
     mumbai: {

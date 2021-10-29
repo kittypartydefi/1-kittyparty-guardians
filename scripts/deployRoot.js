@@ -9,7 +9,7 @@ const fs = require('fs');
 const hre = require("hardhat")
 const checkpointManager = '';
 const FxRoot = '0xfe5e5D361b2ad62c541bAb87C45a0B9B018389a2';
-const daoTreasury = "0x6E59B243B9A534E63E39a7debb6658d5A4806A8C";
+const daoTreasury = "0x90Bd364a719493B33dCC31233D1032b3AC686430";
 async function main() {
   const [deployer] = await ethers.getSigners();
 
@@ -51,9 +51,9 @@ function delay(ms) {
 // and properly handle errors.
   main()
   .then( async (deployedData) => {
-    // await delay(50000);
+    await delay(50000);
     //await verify(deployedData.kPL1FxTunnel, checkpointManager, FxRoot); //Verify the master contract
-    // await verify(deployedData.kPL1GuardianNFT, daoTreasury); //Verify the master contract
+    await verify(deployedData.kPL1GuardianNFT, daoTreasury); //Verify the master contract
     process.exit(0)
   })
   .catch(error => {

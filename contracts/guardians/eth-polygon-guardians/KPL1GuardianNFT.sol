@@ -94,24 +94,24 @@ contract KPL1GuardianNFT is AccessControl, ERC721URIStorage, ERC721Enumerable, V
         payable(msg.sender).transfer(amount);
     }
 
-    function addEarlyBirds(address[] memory _earlyBirdAddresses) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    function addEarlyBirds(address[] memory _earlyBirdAddresses) external onlyRole(DAO_AGENT_ROLE) {
         for(uint i=0; i < _earlyBirdAddresses.length; ++i) {
             earlyBirds[_earlyBirdAddresses[i]] = true;
         }
         emit SetEarlyBirds(_earlyBirdAddresses, _earlyBirdAddresses.length);
     }
 
-    function addNewEarlyBird(address _earlyBirdAddress) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    function addNewEarlyBird(address _earlyBirdAddress) external onlyRole(DAO_AGENT_ROLE) {
         earlyBirds[_earlyBirdAddress] = true;
         emit SetEarlyBird(_earlyBirdAddress, earlyBirds[_earlyBirdAddress]);
     }
 
-    function setKeyHash(bytes32 _keyHash) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    function setKeyHash(bytes32 _keyHash) external onlyRole(DAO_AGENT_ROLE) {
         keyHash = _keyHash;
         emit SetChainlinkKeyHash(_keyHash);
     }
 
-    function setChainlinkFee(uint256 _fee) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    function setChainlinkFee(uint256 _fee) external onlyRole(DAO_AGENT_ROLE) {
         fee = _fee;
         emit SetChainlinkFee(_fee);
     }
@@ -152,7 +152,6 @@ contract KPL1GuardianNFT is AccessControl, ERC721URIStorage, ERC721Enumerable, V
         onlyCrossChainAdapter() 
         onlyAfterCrossChainActive() 
     {
-        require(totalSupply() < 8888);
         currentGuardiansInThisNetwork++;
         _safeMint(to, _tokenId);
         _setAttributes(_tokenId, _attributeSet);
@@ -163,7 +162,6 @@ contract KPL1GuardianNFT is AccessControl, ERC721URIStorage, ERC721Enumerable, V
         onlyCrossChainAdapter() 
         onlyAfterCrossChainActive() 
     {
-        require(tokenId <= 87);
         currentGuardiansInThisNetwork--;        
         _burn(tokenId);
     }
