@@ -89,9 +89,9 @@ contract KPL1GuardianNFT is AccessControl, ERC721URIStorage, ERC721Enumerable, V
     }
 
     function withdrawAll() external onlyRole(DAO_AGENT_ROLE) {
-        uint amount = pendingWithdrawals[msg.sender];
-        pendingWithdrawals[msg.sender] = 0;
-        payable(msg.sender).transfer(amount);
+        uint amount = pendingWithdrawals[daoTreasury];
+        pendingWithdrawals[daoTreasury] = 0;
+        payable(daoTreasury).transfer(amount);
     }
 
     function addEarlyBirds(address[] memory _earlyBirdAddresses) external onlyRole(DAO_AGENT_ROLE) {
@@ -188,7 +188,7 @@ contract KPL1GuardianNFT is AccessControl, ERC721URIStorage, ERC721Enumerable, V
         return guardians[_candidateAddress];
     }
 
-    function isEarlyBird(address _checkIfEarlyBird)  public view returns(bool) {
+    function isEarlyBird(address _checkIfEarlyBird) public view returns(bool) {
         return earlyBirds[_checkIfEarlyBird];
     }
 

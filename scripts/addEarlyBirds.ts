@@ -19,19 +19,20 @@ import {
 } from '../src/types/index';
 
 
-const kPL1GuardianNFTAddress = '0x145819CA4d19BD3587Fd6F7f94BA6A639A0BfC9f';
+const kPL1GuardianNFTAddress = '0x9c381e34a75b2257677a830342e5778534e8558f';
 
 const earlyBirdAddresses = [];
 
 
 async function main() {
+  const [deployer, daoTreasury] = await ethers.getSigners();
   const KPL1GuardianNFT = await ethers.getContractFactory("KPL1GuardianNFT");
 
   const kPL1GuardianNFT = await KPL1GuardianNFT.attach(
     kPL1GuardianNFTAddress
   );
 
-  await kPL1GuardianNFT.addEarlyBirds(earlyBirdAddresses);
+  await kPL1GuardianNFT.connect(daoTreasury).addEarlyBirds(earlyBirdAddresses);
   await delay(10000);
  
 }

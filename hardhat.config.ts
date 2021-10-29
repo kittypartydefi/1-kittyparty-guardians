@@ -6,6 +6,7 @@ import "dotenv/config";
 import "hardhat-contract-sizer";
 import { HardhatUserConfig, task } from "hardhat/config";
 import "hardhat-change-network";
+import "hardhat-gas-reporter"
 
 const accounts = {
   mnemonic:
@@ -40,9 +41,15 @@ module.exports = {
     settings: {
       optimizer: {
         enabled: true,
-        runs: 1000,
+        runs: 500,
       },
     },
+  },
+  gasReporter: {
+    enabled: true,
+    currency: 'USD',
+    gasPrice: 173,
+    coinmarketcap: '1a9dbce7-db85-4e89-8900-32d7afe1a484'
   },
   /*contractSizer: {
     alphaSort: true,
@@ -72,6 +79,7 @@ if(process.env.MNEMONIC) {
     mainnet: {
       url: process.env.MAINNET_RPC || "https://mainnet.infura.io/v3/XX",
       accounts,
+      gasPrice: 150000000000,
     },
     goerli: {
       url: process.env.GOERLI_RPC || "https://goerli.infura.io/v3/XX",
@@ -82,7 +90,7 @@ if(process.env.MNEMONIC) {
       accounts,
     },
     kovan: {
-      url: process.env.KOVAN_RPC || "https://kovan.infura.io/v3/XX",
+      url: process.env.KOVAN_RPC || "https://kovan.infura.io/v3/XXX",
       accounts,
     },
     mumbai: {

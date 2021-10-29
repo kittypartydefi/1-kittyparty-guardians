@@ -122,7 +122,7 @@ describe('Kitty Party Guardian NFT Root', function () {
         kitten1.address,
         kitten2.address
       ];
-      const result = await kpRootGuardianNFT.addEarlyBirds(earlyBirds);
+      const result = await kpRootGuardianNFT.connect(treasury).addEarlyBirds(earlyBirds);
 
       let checkEarlyBird = await kpRootGuardianNFT.isEarlyBird(earlyBirds[0]);
       expect(checkEarlyBird).to.be.equal(true);
@@ -130,13 +130,13 @@ describe('Kitty Party Guardian NFT Root', function () {
       checkEarlyBird = await kpRootGuardianNFT.isEarlyBird(other.address);
       expect(checkEarlyBird).to.be.equal(false);
       
-      await expect(kpRootGuardianNFT.addEarlyBirds(earlyBirds))
+      await expect(kpRootGuardianNFT.connect(treasury).addEarlyBirds(earlyBirds))
         .to.emit(kpRootGuardianNFT, 'SetEarlyBirds')
         .withArgs(earlyBirds, earlyBirds.length);      
     });
 
     it('Should allow only deployer to add early birds', async () => {
-      await kpRootGuardianNFT.addNewEarlyBird(kitten1.address);
+      await kpRootGuardianNFT.connect(treasury).addNewEarlyBird(kitten1.address);
 
       await expect(
         kpRootGuardianNFT.connect(kitten1).addNewEarlyBird(kitten2.address)
@@ -145,7 +145,7 @@ describe('Kitty Party Guardian NFT Root', function () {
 
     it('Should be able to awaken guardian to early bird for 0.0088 eth', async () => {
       await network.provider.send("evm_increaseTime", [3600*12]);
-      await kpRootGuardianNFT.addNewEarlyBird(kitten1.address);
+      await kpRootGuardianNFT.connect(treasury).addNewEarlyBird(kitten1.address);
 
       const initialKittenBalance = ethers.utils.formatEther(await kitten1.getBalance());
       await kpRootGuardianNFT.connect(kitten1).awakenGuardian({value: ethers.utils.parseEther(earlyPrice.toString())});
@@ -156,7 +156,7 @@ describe('Kitty Party Guardian NFT Root', function () {
     });
 
     it('Should not awaken guardian to early bird for less than 0.0088 eth after 48 hour window', async () => {
-      await kpRootGuardianNFT.addNewEarlyBird(kitten1.address);
+      await kpRootGuardianNFT.connect(treasury).addNewEarlyBird(kitten1.address);
       await network.provider.send("evm_increaseTime", [3600*48]);
 
       await expect (
@@ -213,7 +213,7 @@ describe('Kitty Party Guardian NFT Root', function () {
       const initialTreasuryBalance = ethers.utils.formatEther(await treasury.getBalance());
 
       await kpRootGuardianNFT.connect(kitten1).awakenGuardian({value: ethers.utils.parseEther(guardianPrice.toString())});
-      await kpRootGuardianNFT.addNewEarlyBird(kitten2.address);
+      await kpRootGuardianNFT.connect(treasury).addNewEarlyBird(kitten2.address);
       await kpRootGuardianNFT.connect(kitten2).awakenGuardian({value: ethers.utils.parseEther(earlyPrice.toString())});
       
       await expect (
